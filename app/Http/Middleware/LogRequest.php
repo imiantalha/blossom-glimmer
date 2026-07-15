@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Stevebauman\Location\Facades\Location;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogRequest
@@ -18,11 +19,36 @@ class LogRequest
     {
         $response = $next($request);
 
+        $requestIp = $request->ip();
+        $staticIp = env('STATIC_IP', '39.37.154.26');
+        $ip = $requestIp === '127.0.0.1' ? $staticIp : $requestIp;
+
+        $location = Location::get($ip);
+
+        $location = $location ?: (object) [
+            'countryName' => null,
+            'countryCode' => null,
+            'regionName'  => null,
+            'cityName'    => null,
+            'latitude'    => null,
+            'longitude'   => null,
+            'timezone'    => null,
+        ];
+
         Log::channel('requestlog')->info('Incomming Request', [
             'method'    => $request->method(),
             'url'       => $request->fullUrl(),
             'path'      => $request->path(),
-            'ip'        => $request->ip(),
+
+            'ip'        => $ip,
+            'country'   => $location->countryName,
+            'country_code' => $location->countryCode,
+            'region'    => $location->regionName,
+            'city'      => $location->cityName,
+            'latitude'  => $location->latitude,
+            'longitude' => $location->longitude,
+            'timezone'  => $location->timezone,
+
             'user_agent'=> $request->userAgent(),
             'headers'   => collect($request->headers->all())
                 ->except(['authorization', 'cookie'])
