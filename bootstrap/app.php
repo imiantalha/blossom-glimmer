@@ -1,9 +1,18 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Support\ApiResponse;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,20 +24,57 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append([
             \App\Http\Middleware\ForceJsonResponse::class,
-            \App\Http\Middleware\LogRequest::class
+            \App\Http\Middleware\LogRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed.',
-                'errors' => $e->errors(),
-            ], 422);
+
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            return ApiResponse::validationErrorResponse($e->errors());
         });
 
-        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            return ApiResponse::unauthorizedResponse('Unauthenticated.');
+        });
+
+        $exceptions->render(function (AuthorizationException $e, Request $request) {
+            return ApiResponse::forbiddenResponse();
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            return ApiResponse::notFoundResponse('Resource not found.');
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            return ApiResponse::notFoundResponse('Route not found.');
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            return ApiResponse::methodNotAllowedResponse();
+        });
+
+        $exceptions->render(function (TooManyRequestsHttpException $e, Request $request) {
+            return ApiResponse::tooManyRequestsResponse();
+        });
+
+        $exceptions->render(function (HttpException $e, Request $request) {
+            return ApiResponse::errorResponse(
+                $e->getMessage() ?: 'HTTP Error.',
+                null,
+                $e->getStatusCode()
+            );
+        });
+
+        $exceptions->render(function (Throwable $e, Request $request) {
+            return ApiResponse::serverErrorResponse(
+                config('app.debug')
+                    ? $e->getMessage()
+                    : 'Internal server error.'
+            );
+        });
+
+        $exceptions->shouldRenderJsonWhen(function (Request $request) {
             return $request->is('api/*');
         });
-        
+
     })->create();
