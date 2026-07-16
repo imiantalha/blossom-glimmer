@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRegisterRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -17,10 +21,10 @@ class UserController extends Controller
         $perPage = $request->query('per_page', 10);
         $users = User::select('id', 'name', 'email')->paginate($perPage);
 
-        return UserResource::collection($users)
-            ->additional([
-                'message' => 'Users fetched successfully',
-            ]);
+        return ApiResponse::successResponse(
+            UserResource::collection($users),
+            'Users fetched successfully'
+        );
     }
 
     /**
@@ -34,9 +38,18 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRegisterRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['password'] = Hash::make($request->password);
+
+
+        $user = User::create($data);
+
+        return ApiResponse::successResponse(
+            new UserResource($user),
+            'User created successfully'
+        );
     }
 
     /**
@@ -44,10 +57,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json([
-            "message" => "User fetched successfully",
-            "data" => new UserResource($user),
-        ], 200);
+        return ApiResponse::successResponse(
+            new UserResource($user),
+            'User fetched successfully'
+        );
     }
 
     /**
@@ -61,9 +74,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($request->password);
+        }
+        $user->update($data);
+
+        return ApiResponse::successResponse(
+            new UserResource($user),
+            'User updated successfully'
+        );
     }
 
     /**
@@ -71,6 +94,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return ApiResponse::successResponse(
+            null,
+            'User deleted successfully'
+        );
     }
 }
