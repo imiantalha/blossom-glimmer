@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Constants\Role;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -45,6 +46,7 @@ class UserController extends Controller
 
 
         $user = User::create($data);
+        $user->assignRole(Role::CUSTOMER);
 
         return ApiResponse::successResponse(
             new UserResource($user),
