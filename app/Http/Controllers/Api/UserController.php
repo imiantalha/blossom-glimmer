@@ -76,6 +76,8 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+        
         $data = $request->validated();
 
         if (isset($data['password'])) {
