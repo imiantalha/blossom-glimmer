@@ -13,10 +13,16 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('throttle:10,1')->group(function () {
     
-    Route::post('/login', [AuthController::class, 'login']);
- 
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/register', 'register');
+        Route::post('/login', 'login');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/logout', 'logout');
+        });
+    });
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::resource('/users', UserController::class);
-        Route::post('/logout', [AuthController::class, 'logout']);
     });
 });
