@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class UserRegisterRequest extends FormRequest
@@ -13,7 +14,7 @@ class UserRegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::guest() || $this->user()?->can('user.create');
     }
 
     /**
