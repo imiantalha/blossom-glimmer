@@ -37,7 +37,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->id === $model->id || $user->hasRole(Role::ADMIN);
+        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('user.update');
     }
 
     /**
@@ -45,7 +45,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->id === $model->id || $user->hasRole(Role::ADMIN);
+        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('user.delete');
     }
 
     /**
