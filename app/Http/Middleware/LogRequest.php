@@ -19,6 +19,8 @@ class LogRequest
     public function handle(Request $request, Closure $next): Response
     {
         $start = microtime(true);
+
+        $response = $next($request);
         
         $requestIp = $request->ip();
         $staticIp = env('STATIC_IP', '39.37.154.26');
@@ -97,8 +99,6 @@ class LogRequest
             'response_status' => null,
             'response_time_ms' => null,
         ]);
-
-        $response = $next($request);
 
         $log->update([
             'status'            => 'completed',
