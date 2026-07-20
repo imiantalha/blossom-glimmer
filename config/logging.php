@@ -131,7 +131,7 @@ return [
             'driver' => 'daily',
             'path'  => storage_path('logs/request.log'),
             'level'  => 'info',
-            'days'  => 14,
+            'days'  => 7,
         ],
 
     ],
