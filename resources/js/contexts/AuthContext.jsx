@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import authService from "../services/auth.service";
 import token from "../utils/token";
 
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
         const accessToken = token.get();
 
         if (!accessToken) {
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         checkAuth();
