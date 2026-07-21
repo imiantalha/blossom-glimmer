@@ -34,9 +34,14 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return ApiResponse::loginResponse(
-            new UserResource($user),
-            $token,
+        $data = [
+            'user' => new UserResource($user),
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ];
+
+        return ApiResponse::successResponse(
+            $data,
             'Login successful'
         );
     }
