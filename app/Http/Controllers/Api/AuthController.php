@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * @var User
+     */
     protected $user;
+
     public function __construct(User $user)
     {
         $this->user = $user;
@@ -43,6 +47,16 @@ class AuthController extends Controller
         return ApiResponse::successResponse(
             $data,
             'Login successful'
+        );
+    }
+
+    public function me(Request $request)
+    {
+        $user = new UserResource($request->user());
+        
+        return ApiResponse::successResponse(
+            $user,
+            'User details retrieved successfully'
         );
     }
 
