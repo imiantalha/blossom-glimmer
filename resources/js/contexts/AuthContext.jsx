@@ -59,12 +59,25 @@ export const AuthProvider = ({ children }) => {
 
     const isAuthenticated = !!user;
 
+    const logout = async () => {
+        setLoading(true);
+
+        try {
+            await authService.logout();
+        } finally {
+            token.remove();
+            setUser(null);
+            setLoading(false);
+        }
+    }
+
     const value = {
         user,
         loading,
         initializing,
         isAuthenticated,
         login,
+        logout,
         checkAuth,
     };
 
