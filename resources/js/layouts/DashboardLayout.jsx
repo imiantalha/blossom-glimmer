@@ -5,16 +5,21 @@ import Sidebar from "../components/layout/Sidebar";
 
 export default function DashboardLayout() {
     return (
-        <div className="dashboard-layout">
+        <>
             <Navbar />
-            
-            <div className="dashboard-content">
-                <Sidebar />
 
-                <main>
-                    <Outlet />
-                </main>
+            <div className="dashboard-fluid">
+                
+                <div className="row">
+                    <Sidebar />
+
+                    <main className="col-md-10 py-4">
+
+                        <Outlet />
+
+                    </main>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

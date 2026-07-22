@@ -1,28 +1,54 @@
-import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
+import useAuth from "../../hooks/useAuth";
+
 const Navbar = () => {
+
     const navigate = useNavigate();
+
     const { user, logout } = useAuth();
 
-    const handlLogout = async () => {
+    const handleLogout = async () => {
+
         await logout();
-        
+
         navigate("/login", { replace: true });
+
     };
 
     return (
-        <header className="navbar">
-            <h2>Blossom Glimmer</h2>
 
-            <div>
-                <span>{user?.name}</span>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
 
-                <button onClick={handlLogout}>
-                    Logout
-                </button>
+            <div className="container-fluid">
+
+                <span className="navbar-brand">
+
+                    Blossom Glimmer
+
+                </span>
+
+                <div className="ms-auto d-flex align-items-center">
+
+                    <span className="text-white me-3">
+
+                        {user?.name}
+
+                    </span>
+
+                    <button
+                        className="btn btn-light btn-sm"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
             </div>
-        </header>
+
+        </nav>
+
     );
 };
 

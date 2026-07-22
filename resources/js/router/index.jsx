@@ -7,6 +7,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 
 import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
+import NotFound from '../pages/errors/NotFound';
 
 export default function Router() {
     return (
@@ -27,6 +28,7 @@ export default function Router() {
                 }>
                     <Route index element={<Dashboard />} />
                 </Route>
+                <Route path="*" element={<NotFound />} />
             </Routes>    
         </BrowserRouter>
     );

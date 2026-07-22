@@ -1,29 +1,80 @@
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-    <aside className="sidebar">
-        <nav>
-            <NavLink to="/">
-                Dashboard
-            </NavLink>
-            
-            <NavLink to="/users">
-                Users
-            </NavLink>
 
-            <NavLink to="/roles">
-                Roles
-            </NavLink>
+    return (
 
-            <NavLink to="/permissions">
-                Permissions
-            </NavLink>
+        <aside className="col-md-2 bg-dark text-white min-vh-100">
 
-            <NavLink to="/request-logs">
-                Request Logs
-            </NavLink>
-        </nav>
-    </aside>
+            <h4 className="py-3 text-center">
+                Blossom
+            </h4>
+
+            <ul className="nav flex-column">
+
+                <li className="nav-item">
+
+                    <NavLink
+                        to="/"
+                        end
+                        className={({ isActive }) =>
+                            `nav-link ${isActive ? "active text-white fw-bold" : "text-light"}`
+                        }
+                    >
+                        Dashboard
+                    </NavLink>
+
+                </li>
+
+                <li className="nav-item">
+
+                    <NavLink
+                        to="/users"
+                        className="nav-link text-light"
+                    >
+                        Users
+                    </NavLink>
+
+                </li>
+
+                <li className="nav-item">
+
+                    <NavLink
+                        to="/roles"
+                        className="nav-link text-light"
+                    >
+                        Roles
+                    </NavLink>
+
+                </li>
+
+                <li className="nav-item">
+
+                    <NavLink
+                        to="/permissions"
+                        className="nav-link text-light"
+                    >
+                        Permissions
+                    </NavLink>
+
+                </li>
+
+                <li className="nav-item">
+
+                    <NavLink
+                        to="/request-logs"
+                        className="nav-link text-light"
+                    >
+                        Request Logs
+                    </NavLink>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+    );
 };
 
 export default Sidebar;
