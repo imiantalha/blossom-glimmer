@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import GuestRoute from "../components/routes/GuestRoute";
+import ProtectedRoute from "../components/routes/ProtectedRoute";
 
 import GuestLayout from '../layouts/GuestLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
@@ -10,11 +12,19 @@ export default function Router() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<GuestLayout />}>
+                <Route element={
+                    <GuestRoute>
+                        <GuestLayout />
+                    </GuestRoute>
+                }>
                     <Route path="/login" element={<Login />} />
                 </Route>
 
-                <Route path="/" element={<DashboardLayout />}>
+                <Route element={
+                    <ProtectedRoute>
+                        <DashboardLayout />
+                    </ProtectedRoute>
+                }>
                     <Route index element={<Dashboard />} />
                 </Route>
             </Routes>    

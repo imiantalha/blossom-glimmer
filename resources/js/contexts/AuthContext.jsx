@@ -7,6 +7,7 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [initializing, setInitializing] = useState(true);
 
     /**
      * Login user
@@ -36,10 +37,9 @@ export const AuthProvider = ({ children }) => {
         const accessToken = token.get();
 
         if (!accessToken) {
+            setInitializing(false);
             return;
         }
-
-        setLoading(true);
 
         try {
             const response = await authService.me();
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
             token.remove();
             setUser(null);
         } finally {
-            setLoading(false);
+            setInitializing(false);
         }
     }, []);
 
@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         user,
         loading,
+        initializing,
         isAuthenticated,
         login,
         checkAuth,
