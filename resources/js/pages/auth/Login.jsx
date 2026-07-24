@@ -1,85 +1,37 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import logo from "../../assets/images/logo.png";
+
+import AuthCard from "../../components/auth/AuthCard";
+import LoginForm from "../../components/auth/LoginForm";
 
 const Login = () => {
-    const navigate = useNavigate();
-    const { login, loading } = useAuth();
-
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-    });
-
-    const [errors, setErrors] = useState({});
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        setErrors({});
-
-        try {
-            await login(form);
-
-            navigate("/");
-        } catch (error) {
-            if (error.response?.status === 422) {
-                setErrors(error.response.data.errors);
-                return;
-            }
-
-            alert(error.response?.data?.message || "Login failed.");
-        }
-    };
-
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Email</label>
+        <div
+            className="container-fluid min-vh-100 d-flex align-items-center justify-content-center"
+            style={{
+                background: "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+            }}
+        >
+            <div className="row justify-content-center w-100">
+                <div className="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+                    <div className="text-center">
 
-                <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                />
+                        <img
+                            src={logo}
+                            alt="Blossom Glimmer"
+                            className="img-fluid mb-0"
+                        ></img>
 
-                {errors.email && (
-                    <p>{errors.email[0]}</p>
-                )}
+                    </div>
+
+                    <AuthCard
+                        title="Welcome Back 👋"
+                        subtitle="Sign in to continue"
+                    >
+                        <LoginForm />
+                    </AuthCard>
+                </div>
             </div>
-
-            <div>
-                <label>Password</label>
-
-                <input
-                    type="password"
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                />
-
-                {errors.password && (
-                    <p>{errors.password[0]}</p>
-                )}
-            </div>
-
-            <button
-                type="submit"
-                disabled={loading}
-            >
-                {loading ? "Signing in..." : "Login"}
-            </button>
-        </form>
+        </div>
     );
 };
 
