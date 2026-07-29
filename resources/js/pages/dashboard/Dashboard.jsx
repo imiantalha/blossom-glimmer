@@ -1,40 +1,66 @@
 import PageHeader from "../../components/common/layout/PageHeader";
 import StatCard from "../../components/common/data-display/StatCard";
 
+import Loader from "../../components/common/Loader";
+import Alert from "../../components/common/Alert";
+
+import useDashboard from "../../hooks/useDashboard";
+
 const Dashboard = () => {
+
+    const {
+        statistics,
+        loading,
+        error,
+    } = useDashboard();
+
+    if (loading) {
+
+        return (
+            <Loader message="Loading dashboard..." />
+        );
+
+    }
+
     return (
+
         <>
+
             <PageHeader
                 title="Dashboard"
                 subtitle="Welcome back to Blossom Glimmer."
+            />
+
+            <Alert
+                variant="danger"
+                message={error}
             />
 
             <div className="row">
 
                 <StatCard
                     title="Users"
-                    value={25}
+                    value={statistics.users}
                     icon="bi bi-people-fill"
-                    color="primary"
                 />
 
                 <StatCard
                     title="Roles"
-                    value={5}
+                    value={statistics.roles}
                     icon="bi bi-shield-lock-fill"
                     color="success"
                 />
 
                 <StatCard
                     title="Permissions"
-                    value={42}
+                    value={statistics.permissions}
                     icon="bi bi-key-fill"
                     color="warning"
                 />
 
                 <StatCard
                     title="Request Logs"
-                    value={1250}
+                    value={statistics.request_logs}
                     icon="bi bi-file-earmark-text-fill"
                     color="danger"
                 />
@@ -55,6 +81,7 @@ const Dashboard = () => {
                 </div>
             </div>
         </>
+
     );
 };
 
