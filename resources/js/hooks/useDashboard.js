@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import dashboardService from "../services/dashboard.service";
+import useApi from "./useApi";
 
 const useDashboard = () => {
-
     const [statistics, setStatistics] = useState({
         users: 0,
         roles: 0,
@@ -11,39 +11,20 @@ const useDashboard = () => {
         request_logs: 0,
     });
 
-    const [loading, setLoading] = useState(true);
-
-    const [error, setError] = useState(null);
+    const {
+        loading,
+        error,
+        execute,
+    } = useApi(dashboardService.statistics);
 
     const fetchStatistics = async () => {
+        const response = await execute();
 
-        setLoading(true);
-
-        try {
-
-            const response =
-                await dashboardService.statistics();
-
-            setStatistics(response.data);
-
-        } catch (err) {
-
-            setError(
-                err.response?.data?.message ??
-                "Unable to load dashboard."
-            );
-
-        } finally {
-
-            setLoading(false);
-
-        }
+        setStatistics(response.data);
     };
 
     useEffect(() => {
-
         fetchStatistics();
-
     }, []);
 
     return {
