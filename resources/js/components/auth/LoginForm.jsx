@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 
-import Alert from "../common/Alert";
-import Button from "../common/Button";
-import Input from "../common/Input";
-import PasswordInput from "../common/PasswordInput";
+import Alert from "../common/feedback/Alert";
+import Button from "../common/form/Button";
+import Input from "../common/form/Input";
+import PasswordInput from "../common/form/PasswordInput";
 
 const LoginForm = () => {
     const navigate = useNavigate();

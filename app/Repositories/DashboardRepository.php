@@ -16,7 +16,8 @@ class DashboardRepository implements DashboardRepositoryInterface
             'users' => User::count(),
             'roles' => Role::count(),
             'permissions' => Permission::count(),
-            // 'request_logs' => RequestLog::count(),
+            'request_logs' => 0
+            // 'request_logs' => RequestLog::count() ,
         ];
     }
 }
