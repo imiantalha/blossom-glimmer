@@ -7,24 +7,34 @@ use App\Models\User;
 use App\Constants\Role;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
-use App\Http\Resources\UserResource;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\UserRegisterRequest;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
+use App\Http\Requests\User\IndexUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\UserRegisterRequest;
 
 class UserController extends Controller
 {
+    public function __construct(
+        protected UserService $service
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(IndexUserRequest $request)
     {
-        $perPage = $request->query('per_page', 10);
-        $users = User::select('id', 'name', 'email')->paginate($perPage);
+        $this->authorize('viewAny', User::class);
 
-        return ApiResponse::successResponse(
+        $users = $this->service->paginate(
+            $request->validated()
+        );
+
+        return ApiResponse::paginatedResponse(
             UserResource::collection($users),
-            'Users fetched successfully'
+            'Users retrieved successfully'
         );
     }
 
