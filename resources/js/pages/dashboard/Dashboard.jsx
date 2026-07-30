@@ -1,8 +1,8 @@
 import PageHeader from "../../components/common/layout/PageHeader";
 import StatCard from "../../components/common/data-display/StatCard";
 
-import Loader from "../../components/common/Loader";
-import Alert from "../../components/common/Alert";
+import Loader from "../../components/common/feedback/Loader";
+import Alert from "../../components/common/feedback/Alert";
 
 import useDashboard from "../../hooks/useDashboard";
 
