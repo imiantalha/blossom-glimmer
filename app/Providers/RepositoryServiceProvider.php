@@ -34,10 +34,10 @@ class RepositoryServiceProvider extends ServiceProvider
             RoleRepository::class
         );
 
-        // $this->app->bind(
-        //     PermissionRepositoryInterface::class,
-        //     PermissionRepository::class
-        // );
+        $this->app->bind(
+            PermissionRepositoryInterface::class,
+            PermissionRepository::class
+        );
     }
 
     /**

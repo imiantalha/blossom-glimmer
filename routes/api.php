@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\RoleController;
 
 Route::get('/user', function (Request $request) {
@@ -54,8 +55,8 @@ Route::middleware('throttle:10,1')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        // Route::get('permissions/options', [PermissionController::class, 'options']);
+        Route::get('permissions/options', [PermissionController::class, 'options']);
 
-        // Route::apiResource('permissions', PermissionController::class);
+        Route::apiResource('permissions', PermissionController::class);
     });
 });
