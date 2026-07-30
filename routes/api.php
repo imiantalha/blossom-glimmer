@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\RoleController;
 
 Route::get('/user', function (Request $request) {
     return new UserResource($request->user());
@@ -25,7 +26,36 @@ Route::middleware('throttle:10,1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::resource('/users', UserController::class);
         Route::get('/dashboard', [DashboardController::class, 'index']);
+        
+        /*
+        |--------------------------------------------------------------------------
+        | User Management
+        |--------------------------------------------------------------------------
+        */
+        
+        Route::apiResource('users', UserController::class);
+
+        Route::get('users/options', [UserController::class, 'options']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Role Management
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('roles/options', [RoleController::class, 'options']);
+
+        Route::apiResource('roles', RoleController::class);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Permission Management
+        |--------------------------------------------------------------------------
+        */
+
+        // Route::get('permissions/options', [PermissionController::class, 'options']);
+
+        // Route::apiResource('permissions', PermissionController::class);
     });
 });
