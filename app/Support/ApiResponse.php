@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApiResponse
 {
@@ -51,16 +52,6 @@ class ApiResponse
         return self::successResponse(null, $message);
     }
 
-    public static function loginResponse(mixed $user, string $token, string $message = 'Login successful'): JsonResponse {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ], Response::HTTP_OK);
-    }
-
     public static function methodNotAllowedResponse(string $message = 'Method not allowed.'): JsonResponse {
         return self::errorResponse(
             $message,
@@ -75,5 +66,26 @@ class ApiResponse
             null,
             Response::HTTP_TOO_MANY_REQUESTS
         );
+    }
+
+    public static function paginatedResponse(AnonymousResourceCollection $resource, $message = 'Resources retrieved successfully.'): JsonResponse {
+        $response = $resource->response()->getData(true);
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $response['data'],
+            'pagination' => [
+                'current_page' => $response['meta']['current_page'],
+                'last_page'    => $response['meta']['last_page'],
+                'per_page'     => $response['meta']['per_page'],
+                'total'        => $response['meta']['total'],
+                'count'        => count($response['data']),
+                'from'         => $response['meta']['from'],
+                'to'           => $response['meta']['to'],
+                'has_previous' => $response['meta']['current_page'] > 1,
+                'has_next'     => $response['meta']['current_page'] < $response['meta']['last_page'],
+            ],
+        ], Response::HTTP_OK);
     }
 }
