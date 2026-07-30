@@ -4,105 +4,102 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Constants\Role;
 use App\Support\ApiResponse;
-use Illuminate\Http\Request;
+use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Requests\User\IndexUserRequest;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\UserRegisterRequest;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        $perPage = $request->query('per_page', 10);
-        $users = User::select('id', 'name', 'email')->paginate($perPage);
+    public function __construct(
+        protected UserService $userService
+    ) {
+    }
 
-        return ApiResponse::successResponse(
+    /**
+     * Display a paginated listing of users.
+     */
+    public function index(IndexUserRequest $request): JsonResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $users = $this->userService->paginate(
+            $request->validated()
+        );
+
+        return ApiResponse::paginatedResponse(
             UserResource::collection($users),
-            'Users fetched successfully'
+            'Users retrieved successfully.'
         );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created user.
      */
-    public function create(Request $request)
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        //
+        $this->authorize('create', User::class);
+
+        $user = $this->userService->create(
+            $request->validated()
+        );
+
+        return ApiResponse::createdResponse(
+            new UserResource($user),
+            'User created successfully.'
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified user.
      */
-    public function store(UserRegisterRequest $request)
+    public function show(User $user): JsonResponse
     {
-        $data = $request->validated();
-        $data['password'] = Hash::make($request->password);
+        $this->authorize('view', $user);
 
-
-        $user = User::create($data);
-        $user->assignRole(Role::CUSTOMER);
+        $user = $this->userService->find($user);
 
         return ApiResponse::successResponse(
             new UserResource($user),
-            'User created successfully'
+            'User retrieved successfully.'
         );
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified user.
      */
-    public function show(User $user)
-    {
-        return ApiResponse::successResponse(
-            new UserResource($user),
-            'User fetched successfully'
-        );
-    }
+    public function update(
+        UpdateUserRequest $request,
+        User $user
+    ): JsonResponse {
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
         $this->authorize('update', $user);
-        
-        $data = $request->validated();
 
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($request->password);
-        }
-        $user->update($data);
+        $user = $this->userService->update(
+            $user,
+            $request->validated()
+        );
 
         return ApiResponse::successResponse(
             new UserResource($user),
-            'User updated successfully'
+            'User updated successfully.'
         );
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
-        $user->delete();
+        $this->authorize('delete', $user);
 
-        return ApiResponse::successResponse(
-            null,
-            'User deleted successfully'
+        $this->userService->delete($user);
+
+        return ApiResponse::deletedResponse(
+            'User deleted successfully.'
         );
     }
 }

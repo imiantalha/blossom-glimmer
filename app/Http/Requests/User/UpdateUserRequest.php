@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -28,6 +28,8 @@ class UpdateUserRequest extends FormRequest
             'email'     => ['sometimes', 'string', 'email:rfc,dns', 'max:255', 'unique:users,email,' . $this->user->id],
             'password'  => ['sometimes', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols() /**->uncompromised() */ ],
             'password_confirmation' => ['sometimes'],
+            'roles' => ['sometimes', 'array'],
+            'roles.*' => ['exists:roles,name'],
         ];
     }
 }
