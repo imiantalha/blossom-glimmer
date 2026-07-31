@@ -8,6 +8,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
 import NotFound from '../pages/errors/NotFound';
+import UsersPage from "../pages/users/UsersPage";
 
 export default function Router() {
     return (
@@ -27,6 +28,7 @@ export default function Router() {
                     </ProtectedRoute>
                 }>
                     <Route index element={<Dashboard />} />
+                    <Route path="/users" element={<UsersPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>    

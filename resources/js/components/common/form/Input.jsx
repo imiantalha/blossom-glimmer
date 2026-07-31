@@ -1,38 +1,50 @@
 const Input = ({
     label,
-    name,
-    type = "text",
-    value,
-    onChange,
-    placeholder = "",
     error,
-    required = false,
+    iconLeft,
+    iconRight,
+    className = "",
+    ...props
 }) => {
     return (
         <div className="mb-3">
             {label && (
-                <label className="form-label">
+                <label
+                    htmlFor={props.name}
+                    className="form-label"
+                >
                     {label}
+                    {props.required && (
+                        <span className="text-danger ms-1">*</span>
+                    )}
                 </label>
             )}
 
-            <input
-                type={type}
-                name={name}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                required={required}
-                className={`form-control ${
-                    error ? "is-invalid" : ""
-                }`}
-            />
+            <div className="input-group">
+                {iconLeft && (
+                    <span className="input-group-text">
+                        {iconLeft}
+                    </span>
+                )}
 
-            {error && (
-                <div className="invalid-feedback">
-                    {Array.isArray(error) ? error[0] : error}
-                </div>
-            )}
+                <input
+                    {...props}
+                    id={props.name}
+                    className={`form-control ${error ? "is-invalid" : ""} ${className}`}
+                />
+
+                {iconRight && (
+                    <span className="input-group-text">
+                        {iconRight}
+                    </span>
+                )}
+
+                {error && (
+                    <div className="invalid-feedback">
+                        {Array.isArray(error) ? error[0] : error}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
