@@ -7,7 +7,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 
 import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
-import NotFound from '../pages/errors/NotFound';
+import ErrorPage from '../pages/errors/ErrorPage';
 import UsersPage from "../pages/users/UsersPage";
 
 export default function Router() {
@@ -30,7 +30,10 @@ export default function Router() {
                     <Route index element={<Dashboard />} />
                     <Route path="/users" element={<UsersPage />} />
                 </Route>
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<ErrorPage 
+                    code="404" 
+                    title="Page Not Found" 
+                    description="The page you are looking for does not exist." />} />
             </Routes>    
         </BrowserRouter>
     );

@@ -6,7 +6,7 @@ const ErrorPage = ({
     title,
     description,
     buttonText = "Go to Dashboard",
-    buttonLink = "/dashboard",
+    buttonLink = "/",
 }) => {
     return (
         <div className="container-fluid vh-100 d-flex align-items-center justify-content-center">
@@ -15,9 +15,9 @@ const ErrorPage = ({
                 <img
                     src={logo}
                     alt="Blossom Glimmer"
-                    className="mb-4"
+                    className="mb-1"
                     style={{
-                        height: "70px",
+                        height: "300px",
                         objectFit: "contain",
                     }}
                 />
