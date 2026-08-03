@@ -1,4 +1,5 @@
 import EmptyState from "./EmptyState";
+import Loader from "../feedback/Loader";
 
 const DataTable = ({
     columns= [],
@@ -32,12 +33,14 @@ const DataTable = ({
                 <tbody>
 
                     {data.length === 0 ? (
-                        <td colSpan={columns.length}>
-                            <EmptyState
-                                title="No users found"
-                                description="There are no users to display."
-                            />
-                        </td>
+                        <tr>
+                            <td colSpan={columns.length}>
+                                <EmptyState
+                                    title="No users found"
+                                    description="There are no users to display."
+                                />
+                            </td>
+                        </tr>
 
                     ) : (
 
