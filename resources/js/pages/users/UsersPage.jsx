@@ -1,15 +1,20 @@
-import { useState } from "react";
-
 import PageHeader from "../../components/common/layout/PageHeader";
 import Card from "../../components/common/data-display/Card";
 import Button from "../../components/common/form/Button";
 import Input from "../../components/common/form/Input";
 import DataTable from "../../components/common/data-display/DataTable";
 
-const UsersPage = () => {
-    const [search, setSearch] = useState("");
+import useUsers from "../../hooks/useUsers";
 
-    const loading = false;
+const UsersPage = () => {
+
+    const {
+        users,
+        loading,
+        error,
+        search,
+        setSearch,
+    } = useUsers();
 
     const columns = [
         {
@@ -23,6 +28,7 @@ const UsersPage = () => {
         {
             key: "roles",
             label: "Roles",
+            render: (user) => user.roles.join(", "),
         },
         {
             key: "created_at",
@@ -33,32 +39,21 @@ const UsersPage = () => {
             label: "Actions",
             render: (user) => (
                 <>
-                    <button className="btn btn-sm btn-primary me-2">
-                        Edit
-                    </button>
+                    <Button
+                        size="sm"
+                        className="me-2"
+                    >
+                        <i className="bi bi-pencil-square"></i>
+                    </Button>
 
-                    <button className="btn btn-sm btn-danger">
-                        Delete
-                    </button>
+                    <Button
+                        size="sm"
+                        variant="danger"
+                    >
+                        <i className="bi bi-trash"></i>
+                    </Button>
                 </>
             ),
-        },
-    ];
-
-    const users = [
-        {
-            id: 1,
-            name: "Muhammad Talha",
-            email: "talha@example.com",
-            role: "Admin",
-            created_at: "31 Jul 2026",
-        },
-        {
-            id: 2,
-            name: "John Doe",
-            email: "john@example.com",
-            role: "User",
-            created_at: "30 Jul 2026",
         },
     ];
 
@@ -68,8 +63,13 @@ const UsersPage = () => {
                 title="Users"
                 subtitle="Manage all system users."
                 breadcrumb={[
-                    { label: "Dashboard", href: "/dashboard" },
-                    { label: "Users" }
+                    {
+                        label: "Dashboard",
+                        href: "/dashboard",
+                    },
+                    {
+                        label: "Users",
+                    },
                 ]}
             />
 
@@ -80,10 +80,14 @@ const UsersPage = () => {
                     <div style={{ width: "350px" }}>
                         <Input
                             type="search"
-                            value={search}
                             placeholder="Search users..."
-                            onChange={(e) => setSearch(e.target.value)}
-                            iconLeft={<i className="bi bi-search"></i>}
+                            value={search}
+                            onChange={(e) =>
+                                setSearch(e.target.value)
+                            }
+                            iconLeft={
+                                <i className="bi bi-search"></i>
+                            }
                         />
                     </div>
 
@@ -94,14 +98,19 @@ const UsersPage = () => {
 
                 </div>
 
-                <DataTable 
+                {error && (
+                    <div className="alert alert-danger">
+                        {error}
+                    </div>
+                )}
+
+                <DataTable
                     columns={columns}
                     data={users}
                     loading={loading}
                 />
 
             </Card>
-
         </>
     );
 };
