@@ -1,20 +1,9 @@
 import EmptyState from "./EmptyState";
-import Loader from "../feedback/Loader";
 
 const DataTable = ({
-    columns= [],
-    data=[],
-    loading=false
+    columns = [],
+    data = [],
 }) => {
-
-    if (loading) {
-        return (
-            <Loader
-                message="Loading users..."
-            />
-        );
-    }
-
     return (
         <div className="table-responsive">
 
@@ -33,6 +22,7 @@ const DataTable = ({
                 <tbody>
 
                     {data.length === 0 ? (
+
                         <tr>
                             <td colSpan={columns.length}>
                                 <EmptyState
@@ -51,11 +41,9 @@ const DataTable = ({
                                 {columns.map((column) => (
 
                                     <td key={column.key}>
-
                                         {column.render
                                             ? column.render(row)
                                             : row[column.key]}
-
                                     </td>
 
                                 ))}
@@ -67,7 +55,9 @@ const DataTable = ({
                     )}
 
                 </tbody>
+
             </table>
+
         </div>
     );
 };
