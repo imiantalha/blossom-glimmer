@@ -27,13 +27,9 @@ const useUsers = () => {
     };
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
-
-    useEffect(() => {
         const timeout = setTimeout(() => {
             fetchUsers(1, search);
-        }, 400);
+        }, 900);
 
         return () => clearTimeout(timeout);
     }, [search]);

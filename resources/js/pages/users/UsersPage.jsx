@@ -7,7 +7,6 @@ import DataTable from "../../components/common/data-display/DataTable";
 import useUsers from "../../hooks/useUsers";
 
 const UsersPage = () => {
-
     const {
         users,
         loading,
@@ -38,11 +37,8 @@ const UsersPage = () => {
             key: "actions",
             label: "Actions",
             render: (user) => (
-                <>
-                    <Button
-                        size="sm"
-                        className="me-2"
-                    >
+                <div className="d-flex gap-2">
+                    <Button size="sm">
                         <i className="bi bi-pencil-square"></i>
                     </Button>
 
@@ -52,7 +48,7 @@ const UsersPage = () => {
                     >
                         <i className="bi bi-trash"></i>
                     </Button>
-                </>
+                </div>
             ),
         },
     ];
@@ -77,18 +73,34 @@ const UsersPage = () => {
 
                 <div className="d-flex justify-content-between align-items-center mb-4">
 
-                    <div style={{ width: "350px" }}>
-                        <Input
-                            type="search"
-                            placeholder="Search users..."
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(e.target.value)
-                            }
-                            iconLeft={
-                                <i className="bi bi-search"></i>
-                            }
-                        />
+                    <div
+                        className="d-flex align-items-center gap-2"
+                        style={{ width: "350px" }}
+                    >
+                        <div className="flex-grow-1">
+                            <Input
+                                type="search"
+                                placeholder="Search users..."
+                                value={search}
+                                onChange={(e) =>
+                                    setSearch(e.target.value)
+                                }
+                                iconLeft={
+                                    <i className="bi bi-search"></i>
+                                }
+                            />
+                        </div>
+
+                        {loading && (
+                            <div
+                                className="spinner-border spinner-border-sm text-primary"
+                                role="status"
+                            >
+                                <span className="visually-hidden">
+                                    Loading...
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     <Button>
@@ -107,7 +119,6 @@ const UsersPage = () => {
                 <DataTable
                     columns={columns}
                     data={users}
-                    loading={loading}
                 />
 
             </Card>
