@@ -7,6 +7,7 @@ const useUsers = () => {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [pagination, setPagination] = useState(null);
+    const [page, setPage] = useState(1);
 
     const {
         loading,
@@ -14,7 +15,7 @@ const useUsers = () => {
         execute,
     } = useApi(userService.getUsers);
 
-    const fetchUsers = async (page = 1, keyword = search) => {
+    const fetchUsers = async (page = page, keyword = search) => {
         const response = await execute({
             page,
             search: keyword,
@@ -22,21 +23,24 @@ const useUsers = () => {
 
         setUsers(response.data.data);
         setPagination(response.data.pagination);
+        setPage(response.data.pagination.current_page);
 
         return response.data;
     };
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            fetchUsers(1, search);
+            fetchUsers(page, search);
         }, 900);
 
         return () => clearTimeout(timeout);
-    }, [search]);
+    }, [page, search]);
 
     return {
         users,
         pagination,
+        page,
+        setPage,
         search,
         setSearch,
         loading,

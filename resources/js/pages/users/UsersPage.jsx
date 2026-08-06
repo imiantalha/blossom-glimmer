@@ -3,12 +3,16 @@ import Card from "../../components/common/data-display/Card";
 import Button from "../../components/common/form/Button";
 import Input from "../../components/common/form/Input";
 import DataTable from "../../components/common/data-display/DataTable";
+import Pagination from "../../components/common/navigation/Pagination";
 
 import useUsers from "../../hooks/useUsers";
 
 const UsersPage = () => {
     const {
         users,
+        pagination,
+        page,
+        setPage,
         loading,
         error,
         search,
@@ -120,6 +124,14 @@ const UsersPage = () => {
                     columns={columns}
                     data={users}
                 />
+
+                {pagination && (
+                    <Pagination
+                        currentPage={page}
+                        lastPage={pagination.last_page}
+                        onPageChange={setPage}
+                    />
+                )}
 
             </Card>
         </>
