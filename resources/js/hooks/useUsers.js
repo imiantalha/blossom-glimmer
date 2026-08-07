@@ -1,13 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import useApi from "./useApi";
 import userService from "../services/user.service";
 
 const useUsers = () => {
     const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState("");
     const [pagination, setPagination] = useState(null);
-    const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const page = useMemo(() => {
+        return Number(searchParams.get("page")) || 1;
+    }, [searchParams]);
+
+    const search = useMemo(() => {
+        return searchParams.get("search") || "";
+    }, [searchParams]);
 
     const {
         loading,
