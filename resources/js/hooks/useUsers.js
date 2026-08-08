@@ -51,6 +51,7 @@ const useUsers = () => {
         setPage,
         search,
         setSearch,
+        
         loading,
         error,
         refresh: fetchUsers,
