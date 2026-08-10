@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import useApi from "./useApi";
 import userService from "../services/user.service";
 
 const useUsers = () => {
     const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState("");
     const [pagination, setPagination] = useState(null);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const page = Number(searchParams.get("page")) || 1;
+    const search = searchParams.get("search") || "";
 
     const {
         loading,
@@ -14,9 +19,34 @@ const useUsers = () => {
         execute,
     } = useApi(userService.getUsers);
 
-    const fetchUsers = async (page = 1, keyword = search) => {
+    const updateSearch = (value) => {
+        const params = new URLSearchParams(searchParams);
+
+        if (value) {
+            params.set("search", value);
+        } else {
+            params.delete("search");
+        }
+
+        params.delete("page");
+
+        setSearchParams(params);
+    };
+
+    const updatePage = (value) => {
+        const params = new URLSearchParams(searchParams);
+
+        params.delete("page");
+
+        setSearchParams(params);
+    };
+
+    const fetchUsers = async (
+        currentPage = page,
+        keyword = search
+    ) => {
         const response = await execute({
-            page,
+            page: currentPage,
             search: keyword,
         });
 
@@ -28,19 +58,24 @@ const useUsers = () => {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            fetchUsers(1, search);
+            fetchUsers(page, search);
         }, 900);
 
         return () => clearTimeout(timeout);
-    }, [search]);
+    }, [page, search]);
 
     return {
         users,
         pagination,
+        page,
         search,
-        setSearch,
+
+        setSearch: updateSearch,
+        setPage: updatePage,
+
         loading,
         error,
+
         refresh: fetchUsers,
     };
 };
