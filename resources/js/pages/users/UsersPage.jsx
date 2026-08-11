@@ -11,7 +11,6 @@ const UsersPage = () => {
     const {
         users,
         pagination,
-        page,
         setPage,
         loading,
         error,
@@ -127,7 +126,7 @@ const UsersPage = () => {
 
                 {pagination && (
                     <Pagination
-                        currentPage={page}
+                        currentPage={pagination.current_page}
                         lastPage={pagination.last_page}
                         onPageChange={setPage}
                     />

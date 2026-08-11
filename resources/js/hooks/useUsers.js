@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import useApi from "./useApi";
@@ -7,15 +7,11 @@ import userService from "../services/user.service";
 const useUsers = () => {
     const [users, setUsers] = useState([]);
     const [pagination, setPagination] = useState(null);
+
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const page = useMemo(() => {
-        return Number(searchParams.get("page")) || 1;
-    }, [searchParams]);
-
-    const search = useMemo(() => {
-        return searchParams.get("search") || "";
-    }, [searchParams]);
+    const page = Number(searchParams.get("page")) || 1;
+    const search = searchParams.get("search") || "";
 
     const {
         loading,
@@ -23,15 +19,39 @@ const useUsers = () => {
         execute,
     } = useApi(userService.getUsers);
 
-    const fetchUsers = async (page = page, keyword = search) => {
+    const updateSearch = (value) => {
+        const params = new URLSearchParams(searchParams);
+
+        if (value) {
+            params.set("search", value);
+        } else {
+            params.delete("search");
+        }
+
+        params.delete("page");
+
+        setSearchParams(params);
+    };
+
+    const updatePage = (value) => {
+        const params = new URLSearchParams(searchParams);
+
+        params.delete("page");
+
+        setSearchParams(params);
+    };
+
+    const fetchUsers = async (
+        currentPage = page,
+        keyword = search
+    ) => {
         const response = await execute({
-            page,
+            page: currentPage,
             search: keyword,
         });
 
         setUsers(response.data.data);
         setPagination(response.data.pagination);
-        setPage(response.data.pagination.current_page);
 
         return response.data;
     };
@@ -48,12 +68,14 @@ const useUsers = () => {
         users,
         pagination,
         page,
-        setPage,
         search,
-        setSearch,
-        
+
+        setSearch: updateSearch,
+        setPage: updatePage,
+
         loading,
         error,
+
         refresh: fetchUsers,
     };
 };
