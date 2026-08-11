@@ -36,7 +36,11 @@ const useUsers = () => {
     const updatePage = (value) => {
         const params = new URLSearchParams(searchParams);
 
-        params.delete("page");
+        if (value === 1) {
+            params.delete("page");
+        } else {
+            params.set("page", String(value));
+        }
 
         setSearchParams(params);
     };
