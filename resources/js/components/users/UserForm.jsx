@@ -1,0 +1,94 @@
+import Input from "../common/form/Input";
+import Button from "../common/form/Button";
+
+const UserForm = ({
+    mood = "create",
+    form,
+    loading = false,
+    errors = {},
+    onChange,
+    onSubmit,
+    onCancel,
+}) => {
+    const isEdit = mood === "edit";
+
+    return (
+        <form onSubmit={onSubmit}>
+            <Input
+                label="Name"
+                name="name"
+                value={form.name}
+                onChange={onChange}
+                placeholder="Enter name"
+                error={errors.name}
+                iconLeft={<i className="bi bi-person"></i>}
+                required
+            />
+
+            <Input
+                label="Email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={onChange}
+                placeholder="Enter email"
+                error={errors.email}
+                iconLeft={<i className="bi bi-envelope"></i>}
+                required
+            />
+
+            <Input
+                label="Password"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={onChange}
+                placeholder="Enter password"
+                error={errors.password}
+                iconLeft={<i className="bi bi-lock"></i>}
+                required={!isEdit}
+            />
+
+            <Input 
+                label="Confirm Password"
+                name="password_confirmation"
+                type="password"
+                value={form.password_confirmation}
+                onChange={onChange}
+                placeholder="Confirm password"
+                error={errors.password_confirmation}
+                iconLeft={<i className="bi bi-lock"></i>}
+                required={!isEdit}
+            />
+
+            <div className="d-flex justify-content-end gap-2 mt-4">
+
+                <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={onCancel}
+                    disabled={loading}
+                >
+                    Cancel
+                </Button>
+
+                <Button
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading && (
+                        <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                        />
+                    )}
+
+                    {isEdit ? "Update User" : "Create User"}
+                </Button>
+
+            </div>
+        </form>    
+    );
+};
+
+export default UserForm;
