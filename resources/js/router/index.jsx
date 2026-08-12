@@ -28,6 +28,7 @@ export default function Router() {
                     </ProtectedRoute>
                 }>
                     <Route index element={<Dashboard />} />
+                    <Route path="dashboard" index element={<Dashboard />} />
                     <Route path="/users" element={<UsersPage />} />
                 </Route>
                 <Route path="*" element={<ErrorPage 
