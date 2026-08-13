@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Constants\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\Response;
 
 class UserPolicy
@@ -21,7 +22,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return false;
+        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('users.view');
     }
 
     /**
@@ -29,7 +30,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole(Role::ADMIN) || $user->can('users.create') || Auth::guest();
     }
 
     /**
@@ -37,7 +38,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('user.update');
+        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('users.update');
     }
 
     /**
@@ -45,7 +46,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('user.delete');
+        return $user->id === $model->id || $user->hasRole(Role::ADMIN) || $user->can('users.delete');
     }
 
     /**
