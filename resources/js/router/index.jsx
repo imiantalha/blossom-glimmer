@@ -9,6 +9,7 @@ import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
 import ErrorPage from '../pages/errors/ErrorPage';
 import UsersPage from "../pages/users/UsersPage";
+import CreateUserPage from "../pages/users/CreateUserPage";
 
 export default function Router() {
     return (
@@ -30,6 +31,7 @@ export default function Router() {
                     <Route index element={<Dashboard />} />
                     <Route path="dashboard" index element={<Dashboard />} />
                     <Route path="/users" element={<UsersPage />} />
+                    <Route path="/users/create" element={<CreateUserPage />} />
                 </Route>
                 <Route path="*" element={<ErrorPage 
                     code="404" 

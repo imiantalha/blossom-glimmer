@@ -4,10 +4,11 @@ import Button from "../../components/common/form/Button";
 import Input from "../../components/common/form/Input";
 import DataTable from "../../components/common/data-display/DataTable";
 import Pagination from "../../components/common/navigation/Pagination";
-
+import { useNavigate } from "react-router-dom";
 import useUsers from "../../hooks/useUsers";
 
 const UsersPage = () => {
+    const navigate = useNavigate();
     const {
         users,
         pagination,
@@ -106,7 +107,7 @@ const UsersPage = () => {
                         )}
                     </div>
 
-                    <Button>
+                    <Button onClick={() => navigate("/users/create")}>
                         <i className="bi bi-plus-lg me-2"></i>
                         Create User
                     </Button>
