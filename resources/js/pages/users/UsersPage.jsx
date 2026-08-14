@@ -9,6 +9,7 @@ import useUsers from "../../hooks/useUsers";
 
 const UsersPage = () => {
     const navigate = useNavigate();
+
     const {
         users,
         pagination,

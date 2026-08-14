@@ -7,9 +7,11 @@ import UserForm from "../../components/users/UserForm";
 
 import useApi from "../../hooks/useApi";
 import userService from "../../services/user.service";
+import { useToast } from "../../contexts/ToastContext";
 
 const CreateUserPage = () => {
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [form, setForm] = useState({
         name: "",
@@ -46,7 +48,12 @@ const CreateUserPage = () => {
         setErrors({});
 
         try {
-            await execute(form);
+            const response = await execute(form);
+
+            toast.success(
+                response.data.message ||
+                "User created successfully."
+            );
 
             navigate("/users");
         } catch (err) {
