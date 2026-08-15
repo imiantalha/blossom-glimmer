@@ -33,5 +33,26 @@ class SendEmailJob implements ShouldQueue
                 $this->body
             )
         );
+
+        Mail::to($emailLog->to)->send(
+            new GenericEmail(
+                $emailLog->subject,
+                $emailLog->body
+            )
+        );
+
+        $emailLog->update([
+            'status' => 'sent',
+            'sent_at' => now(),
+        ]);
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        EmailLog::whereKey($this->emailLogId)->update([
+            'status' => 'failed',
+            'error_message' => $exception->getMessage(),
+            'failed_at' => now(),
+        ]);
     }
 }
