@@ -20,7 +20,14 @@ class EmailService
         string $to,
         string $subject,
         string $body,
-    ) {
+    ) : EmailLog {
+        $emailLog = EmailLog::create([
+            'to' => $to,
+            'subject' => $subject,
+            'body' => $body,
+            'status' => 'queued',
+        ]);
+        
         SendEmailJob::dispatch($to, $subject, $body);
     }
 }
