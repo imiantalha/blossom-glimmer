@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Mail;
-use App\Mail\GenericEmail;
+use App\Models\EmailLog;
 use App\Jobs\SendEmailJob;
 
 class EmailService
@@ -20,14 +20,16 @@ class EmailService
         string $to,
         string $subject,
         string $body,
-    ) : EmailLog {
+    ): EmailLog {
         $emailLog = EmailLog::create([
             'to' => $to,
             'subject' => $subject,
             'body' => $body,
             'status' => 'queued',
         ]);
-        
-        SendEmailJob::dispatch($to, $subject, $body);
+
+        SendEmailJob::dispatch($emailLog->id);
+
+        return $emailLog;
     }
 }

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ $subject }}</title>
+    <title>{{ $emailSubject }}</title>
 </head>
 <body>
     {!! $body !!}

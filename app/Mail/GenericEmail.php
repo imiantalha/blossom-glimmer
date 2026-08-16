@@ -18,7 +18,7 @@ class GenericEmail extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public string $subject,
+        public string $emailSubject,
         public string $body,
     )
     {}
@@ -29,7 +29,7 @@ class GenericEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->subject,
+            subject: $this->emailSubject,
         );
     }
 
