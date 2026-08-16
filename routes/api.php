@@ -58,5 +58,10 @@ Route::middleware('throttle:10,1')->group(function () {
         Route::get('permissions/options', [PermissionController::class, 'options']);
 
         Route::apiResource('permissions', PermissionController::class);
+
+        Route::get('email-logs', [EmailLogController::class, 'index']);
+        Route::get('email-logs/{emailLog}', [EmailLogController::class, 'show']);
+        Route::delete('email-logs/{emailLog}', [EmailLogController::class, 'destroy']);
+        Route::post('email-logs/{emailLog}/retry', [EmailLogController::class, 'retry']);
     });
 });
