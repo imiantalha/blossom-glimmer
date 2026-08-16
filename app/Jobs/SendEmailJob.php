@@ -5,6 +5,9 @@ namespace App\Jobs;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Throwable;
+use App\Mail\GenericEmail;
+use App\Models\EmailLog;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -14,9 +17,7 @@ class SendEmailJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public string $to,
-        public string $subject,
-        public string $body,
+        public int $emailLogId
     )
     {
         //
@@ -27,12 +28,7 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->to)->send(
-            new GenericEmail(
-                $this->subject, 
-                $this->body
-            )
-        );
+        $emailLog = EmailLog::findOrFail($this->emailLogId);
 
         Mail::to($emailLog->to)->send(
             new GenericEmail(
