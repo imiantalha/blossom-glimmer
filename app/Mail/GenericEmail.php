@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Collection;
 
 class GenericEmail extends Mailable
 {
@@ -20,6 +21,7 @@ class GenericEmail extends Mailable
     public function __construct(
         public string $emailSubject,
         public string $body,
+        public Collection $attachments,
     )
     {}
 
@@ -50,6 +52,15 @@ class GenericEmail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return $this->attachments
+            ->map(function ($attachment) {
+                return Attachment::fromStorageDisk(
+                    $attachment->disk,
+                    $attachment->path
+                )->as(
+                    $attachment->original_name
+                );
+            })
+            ->toArray();
     }
 }

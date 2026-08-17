@@ -54,7 +54,7 @@ class EmailLogController extends Controller
     public function retry(EmailLog $emailLog)
     {
         if ($emailLog->status !== 'failed') {
-            return $this->errorResponse(
+            return ApiResponse::errorResponse(
                 'Only failed emails can be retried.',
                 422
             );
@@ -68,7 +68,7 @@ class EmailLogController extends Controller
 
         SendEmailJob::dispatch($emailLog->id);
 
-        return $this->successResponse(
+        return ApiResponse::successResponse(
             $emailLog->fresh(),
             'Email queued for retry successfully.'
         );

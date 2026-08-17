@@ -20,6 +20,7 @@ class EmailService
         string $to,
         string $subject,
         string $body,
+        array $attachements = [],
     ): EmailLog {
         $emailLog = EmailLog::create([
             'to' => $to,
@@ -28,8 +29,20 @@ class EmailService
             'status' => 'queued',
         ]);
 
+        foreach ($attachements as $attachement) {
+            $path = $attachement->store('email-attachemnets');
+
+            $emailLog->attachments()->create([
+                'disk' => config('filesystems.default'),
+                'path' => $path,
+                'original_name' => $attachment->getClientOriginalName(),
+                'mime_type' => $attachment->getMimeType(),
+                'size' => $attachment->getSize(),
+            ]);
+        }
+
         SendEmailJob::dispatch($emailLog->id);
 
-        return $emailLog;
+        return $emailLog->load('attachments');
     }
 }

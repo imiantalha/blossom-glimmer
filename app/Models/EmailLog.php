@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EmailLog extends Model
 {
@@ -22,5 +23,10 @@ class EmailLog extends Model
             'sent_at' => 'datetime',
             'failed_at' => 'datetime',
         ];
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(EmailAttachment::class);
     }
 }
