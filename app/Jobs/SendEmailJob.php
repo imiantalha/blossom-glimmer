@@ -8,6 +8,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Throwable;
 use App\Mail\GenericEmail;
 use App\Models\EmailLog;
+use Illuminate\Support\Facades\Storage;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -28,12 +29,14 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $emailLog = EmailLog::findOrFail($this->emailLogId);
+        $emailLog = EmailLog::with('attachements')
+            ->findOrFail($this->emailLogId);
 
         Mail::to($emailLog->to)->send(
             new GenericEmail(
                 $emailLog->subject,
-                $emailLog->body
+                $emailLog->body,
+                $emailLog->attachements,
             )
         );
 
@@ -41,14 +44,33 @@ class SendEmailJob implements ShouldQueue
             'status' => 'sent',
             'sent_at' => now(),
         ]);
+
+        foreach ($emailLog->attachments as $attachment) {
+            Storage::disk($attachment->disk)->delete(
+                $attachment->path
+            );
+        }
     }
 
     public function failed(Throwable $exception): void
     {
-        EmailLog::whereKey($this->emailLogId)->update([
+        $emailLog = EmailLog::with('attachments')
+            ->find($this->emailLogId);
+
+        if (! $emailLog) {
+            return;
+        }
+
+        $emailLog->update([
             'status' => 'failed',
             'error_message' => $exception->getMessage(),
             'failed_at' => now(),
         ]);
+
+        foreach ($emailLog->attachments as $attachment) {
+            Storage::disk($attachment->disk)->delete(
+                $attachment->path
+            );
+        }
     }
 }

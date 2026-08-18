@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\EmailController;
 
 Route::get('/user', function (Request $request) {
     return new UserResource($request->user());
@@ -63,5 +64,7 @@ Route::middleware('throttle:10,1')->group(function () {
         Route::get('email-logs/{emailLog}', [EmailLogController::class, 'show']);
         Route::delete('email-logs/{emailLog}', [EmailLogController::class, 'destroy']);
         Route::post('email-logs/{emailLog}/retry', [EmailLogController::class, 'retry']);
+
+        Route::post('/emails/send', [EmailController::class, 'send']);
     });
 });
