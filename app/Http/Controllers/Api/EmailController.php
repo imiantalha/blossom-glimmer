@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Support\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\SendEmailRequest;
-
-
-use Illuminate\Http\Request;
+use App\Services\EmailService;
 
 class EmailController extends Controller
 {
+    public function __construct(private readonly EmailService $emailService)
+    {
+    }
     public function send(SendEmailRequest $request)
     {
         $emailLog = $this->emailService->send(

@@ -20,7 +20,7 @@ class EmailService
         string $to,
         string $subject,
         string $body,
-        array $attachements = [],
+        array $attachments = [],
     ): EmailLog {
         $emailLog = EmailLog::create([
             'to' => $to,
@@ -29,8 +29,8 @@ class EmailService
             'status' => 'queued',
         ]);
 
-        foreach ($attachements as $attachement) {
-            $path = $attachement->store('email-attachemnets');
+        foreach ($attachments as $attachment) {
+            $path = $attachment->store('email-attachments');
 
             $emailLog->attachments()->create([
                 'disk' => config('filesystems.default'),

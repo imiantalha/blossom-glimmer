@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class GenericEmail extends Mailable
 {
@@ -21,7 +22,7 @@ class GenericEmail extends Mailable
     public function __construct(
         public string $emailSubject,
         public string $body,
-        public Collection $attachments,
+        public Collection $emailAttachments,
     )
     {}
 
@@ -52,10 +53,18 @@ class GenericEmail extends Mailable
      */
     public function attachments(): array
     {
-        return $this->attachments
+        return $this->emailAttachments
             ->map(function ($attachment) {
+                $disk = $attachment->disk ?: config('filesystems.default');
+
+                if (! Storage::disk($disk)->exists($attachment->path)) {
+                    throw new \RuntimeException(
+                        "Attachment not found: {$attachment->path} on disk {$disk}"
+                    );
+                }
+
                 return Attachment::fromStorageDisk(
-                    $attachment->disk,
+                    $disk,
                     $attachment->path
                 )->as(
                     $attachment->original_name
