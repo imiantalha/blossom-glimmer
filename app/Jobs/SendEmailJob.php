@@ -29,14 +29,14 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $emailLog = EmailLog::with('attachements')
+        $emailLog = EmailLog::with('attachments')
             ->findOrFail($this->emailLogId);
 
         Mail::to($emailLog->to)->send(
             new GenericEmail(
                 $emailLog->subject,
                 $emailLog->body,
-                $emailLog->attachements,
+                $emailLog->attachments,
             )
         );
 
@@ -66,11 +66,5 @@ class SendEmailJob implements ShouldQueue
             'error_message' => $exception->getMessage(),
             'failed_at' => now(),
         ]);
-
-        foreach ($emailLog->attachments as $attachment) {
-            Storage::disk($attachment->disk)->delete(
-                $attachment->path
-            );
-        }
     }
 }
